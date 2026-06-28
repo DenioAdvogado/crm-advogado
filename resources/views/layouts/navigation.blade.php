@@ -26,6 +26,12 @@
                         </x-nav-link>
                     @endcan
 
+                    @can('view-financial')
+                        <x-nav-link :href="route('admin.financeiro.index')" :active="request()->routeIs('admin.financeiro.*')">
+                            {{ __('Financeiro') }}
+                        </x-nav-link>
+                    @endcan
+
                     @can('manage-users')
                         <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
                             {{ __('Usuários') }}
@@ -94,6 +100,12 @@
             @can('view-productivity')
                 <x-responsive-nav-link :href="route('admin.tarefas.productivity')" :active="request()->routeIs('admin.tarefas.productivity')">
                     {{ __('Produtividade') }}
+                </x-responsive-nav-link>
+            @endcan
+
+            @can('view-financial')
+                <x-responsive-nav-link :href="route('admin.financeiro.index')" :active="request()->routeIs('admin.financeiro.*')">
+                    {{ __('Financeiro') }}
                 </x-responsive-nav-link>
             @endcan
 
