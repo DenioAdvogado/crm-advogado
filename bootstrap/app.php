@@ -12,7 +12,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Bloco 2: usuário não autenticado tentando acessar área interna (/admin/*) vai para
+        // /admin/login; cliente não autenticado tentando acessar o portal (/portal/*) vai
+        // para /portal/login.
+        $middleware->redirectGuestsTo(function (Request $request) {
+            return $request->is('portal/*')
+                ? route('portal.login')
+                : route('admin.login');
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

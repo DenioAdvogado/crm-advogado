@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'phone', 'access_level', 'active'])]
+#[Fillable(['name', 'email', 'password', 'phone', 'access_level', 'active', 'can_view_all_cases', 'can_access_financial'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -30,7 +30,24 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'active' => 'boolean',
+            'can_view_all_cases' => 'boolean',
+            'can_access_financial' => 'boolean',
         ];
+    }
+
+    public function isAdministrator(): bool
+    {
+        return $this->access_level === 'administrator';
+    }
+
+    public function isLawyer(): bool
+    {
+        return $this->access_level === 'lawyer';
+    }
+
+    public function isStaff(): bool
+    {
+        return $this->access_level === 'staff';
     }
 
     public function cases(): HasMany

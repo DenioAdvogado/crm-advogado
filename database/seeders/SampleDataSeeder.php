@@ -34,6 +34,18 @@ class SampleDataSeeder extends Seeder
             'active' => true,
         ]);
 
+        // Funcionário de exemplo (Bloco 2): sem acesso ao financeiro por padrão
+        // (can_access_financial = false), para validar a Gate "view-financial".
+        User::create([
+            'name' => 'Fernanda Funcionária',
+            'email' => 'funcionario@advogadointernacional.net',
+            'password' => Hash::make('senha123'),
+            'phone' => '+55 11 90000-0003',
+            'access_level' => 'staff',
+            'active' => true,
+            'can_access_financial' => false,
+        ]);
+
         $laborArea = LegalArea::create([
             'name' => 'Direito Trabalhista',
             'applicable_country' => 'Brazil',

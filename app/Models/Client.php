@@ -2,15 +2,19 @@
 
 namespace App\Models;
 
+use App\Notifications\Portal\ResetPasswordNotification;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Client extends Model
+class Client extends Authenticatable implements CanResetPasswordContract
 {
-    use HasFactory, SoftDeletes;
+    use CanResetPassword, HasFactory, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -38,6 +42,21 @@ class Client extends Model
         return [
             'active' => 'boolean',
         ];
+    }
+
+    /**
+     * O login do portal usa o campo "portal_password" em vez do "password" padrão do
+     * Eloquent, já que esta tabela também guarda dados de negócio (não é uma tabela de auth
+     * dedicada). Por isso sobrescrevemos getAuthPassword().
+     */
+    public function getAuthPassword(): string
+    {
+        return $this->portal_password;
+    }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 
     public function legalAreas(): BelongsToMany
