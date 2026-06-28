@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,6 +26,24 @@ class LegalCase extends Model
         'current_deadline',
         'description',
     ];
+
+    /**
+     * Mesma regra da LegalCasePolicy::view, aplicada em lote para listagens (Bloco 9):
+     * administrador e funcionário veem todos; advogado só os seus, a menos que
+     * can_view_all_cases esteja liberado.
+     */
+    public function scopeVisibleTo(Builder $query, User $user): Builder
+    {
+        if ($user->isAdministrator() || $user->isStaff()) {
+            return $query;
+        }
+
+        if ($user->isLawyer() && $user->can_view_all_cases) {
+            return $query;
+        }
+
+        return $query->where('responsible_lawyer_id', $user->id);
+    }
 
     protected function casts(): array
     {

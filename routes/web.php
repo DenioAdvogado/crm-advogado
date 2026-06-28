@@ -1,10 +1,13 @@
 <?php
 
 use App\Http\Controllers\Admin\CalendarSettingsController;
+use App\Http\Controllers\Admin\CaseController;
 use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EmailLogController;
 use App\Http\Controllers\Admin\FinancialController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
@@ -16,9 +19,7 @@ Route::get('/', function () {
 
 // Área interna (Administrador, Advogado, Funcionário) — guard "web", tabela "users".
 Route::middleware('auth:web')->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -52,8 +53,16 @@ Route::middleware('auth:web')->prefix('admin')->name('admin.')->group(function (
         Route::put('/{lancamento}', [FinancialController::class, 'update'])->name('update');
     });
 
-    // Perfil interno do cliente (Bloco 5) — exibe o resumo financeiro quando aplicável.
+    // Clientes (Bloco 9: listagem; Bloco 5: perfil/resumo financeiro) — só leitura.
+    Route::get('/clientes', [ClientController::class, 'index'])->name('clientes.index');
     Route::get('/clientes/{cliente}', [ClientController::class, 'show'])->name('clientes.show');
+
+    // Processos (Bloco 9 — só leitura, reaproveita a LegalCasePolicy do Bloco 2).
+    Route::get('/processos', [CaseController::class, 'index'])->name('processos.index');
+    Route::get('/processos/{processo}', [CaseController::class, 'show'])->name('processos.show');
+
+    // Serviços (Bloco 9 — só leitura).
+    Route::get('/servicos', [ServiceController::class, 'index'])->name('servicos.index');
 
     // Auditoria de e-mails automáticos (Bloco 6) — só Administrador (Gate "view-email-logs").
     Route::middleware('can:view-email-logs')->prefix('emails')->name('emails.')->group(function () {

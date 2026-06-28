@@ -16,6 +16,18 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
+                    <x-nav-link :href="route('admin.clientes.index')" :active="request()->routeIs('admin.clientes.*')">
+                        {{ __('Clientes') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('admin.processos.index')" :active="request()->routeIs('admin.processos.*')">
+                        {{ __('Processos') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('admin.servicos.index')" :active="request()->routeIs('admin.servicos.*')">
+                        {{ __('Serviços') }}
+                    </x-nav-link>
+
                     <x-nav-link :href="route('admin.tarefas.index')" :active="request()->routeIs('admin.tarefas.*')">
                         {{ __('Tarefas') }}
                     </x-nav-link>
@@ -32,23 +44,45 @@
                         </x-nav-link>
                     @endcan
 
-                    @can('view-email-logs')
-                        <x-nav-link :href="route('admin.emails.index')" :active="request()->routeIs('admin.emails.*')">
-                            {{ __('E-mails') }}
-                        </x-nav-link>
-                    @endcan
-
                     @can('view-reports')
                         <x-nav-link :href="route('admin.relatorios.index')" :active="request()->routeIs('admin.relatorios.*')">
                             {{ __('Relatórios') }}
                         </x-nav-link>
                     @endcan
 
-                    @can('manage-users')
-                        <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
-                            {{ __('Usuários') }}
-                        </x-nav-link>
-                    @endcan
+                    <!-- Configurações: agrupa Usuários (Bloco 2), Agenda (Bloco 7) e
+                         E-mails (Bloco 6). Cada item dentro continua escondido/mostrado
+                         conforme a própria Gate — o dropdown em si é visível a todos porque
+                         "Agenda" não tem restrição (conexão pessoal de cada usuário). -->
+                    <x-dropdown align="left" width="48">
+                        <x-slot name="trigger">
+                            <button class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out focus:outline-none
+                                {{ request()->routeIs('admin.users.*', 'admin.configuracoes.*', 'admin.emails.*') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                                {{ __('Configurações') }}
+                                <svg class="ms-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </x-slot>
+
+                        <x-slot name="content">
+                            @can('manage-users')
+                                <x-dropdown-link :href="route('admin.users.index')">
+                                    {{ __('Usuários') }}
+                                </x-dropdown-link>
+                            @endcan
+
+                            <x-dropdown-link :href="route('admin.configuracoes.agenda.edit')">
+                                {{ __('Agenda (Google Calendar)') }}
+                            </x-dropdown-link>
+
+                            @can('view-email-logs')
+                                <x-dropdown-link :href="route('admin.emails.index')">
+                                    {{ __('E-mails') }}
+                                </x-dropdown-link>
+                            @endcan
+                        </x-slot>
+                    </x-dropdown>
                 </div>
             </div>
 
@@ -70,10 +104,6 @@
                     <x-slot name="content">
                         <x-dropdown-link :href="route('admin.profile.edit')">
                             {{ __('Profile') }}
-                        </x-dropdown-link>
-
-                        <x-dropdown-link :href="route('admin.configuracoes.agenda.edit')">
-                            {{ __('Agenda (Google Calendar)') }}
                         </x-dropdown-link>
 
                         <!-- Authentication -->
@@ -109,6 +139,18 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
 
+            <x-responsive-nav-link :href="route('admin.clientes.index')" :active="request()->routeIs('admin.clientes.*')">
+                {{ __('Clientes') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('admin.processos.index')" :active="request()->routeIs('admin.processos.*')">
+                {{ __('Processos') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('admin.servicos.index')" :active="request()->routeIs('admin.servicos.*')">
+                {{ __('Serviços') }}
+            </x-responsive-nav-link>
+
             <x-responsive-nav-link :href="route('admin.tarefas.index')" :active="request()->routeIs('admin.tarefas.*')">
                 {{ __('Tarefas') }}
             </x-responsive-nav-link>
@@ -125,12 +167,6 @@
                 </x-responsive-nav-link>
             @endcan
 
-            @can('view-email-logs')
-                <x-responsive-nav-link :href="route('admin.emails.index')" :active="request()->routeIs('admin.emails.*')">
-                    {{ __('E-mails') }}
-                </x-responsive-nav-link>
-            @endcan
-
             @can('view-reports')
                 <x-responsive-nav-link :href="route('admin.relatorios.index')" :active="request()->routeIs('admin.relatorios.*')">
                     {{ __('Relatórios') }}
@@ -140,6 +176,16 @@
             @can('manage-users')
                 <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
                     {{ __('Usuários') }}
+                </x-responsive-nav-link>
+            @endcan
+
+            <x-responsive-nav-link :href="route('admin.configuracoes.agenda.edit')" :active="request()->routeIs('admin.configuracoes.*')">
+                {{ __('Agenda (Google Calendar)') }}
+            </x-responsive-nav-link>
+
+            @can('view-email-logs')
+                <x-responsive-nav-link :href="route('admin.emails.index')" :active="request()->routeIs('admin.emails.*')">
+                    {{ __('E-mails') }}
                 </x-responsive-nav-link>
             @endcan
         </div>
@@ -154,10 +200,6 @@
             <div class="mt-3 space-y-1">
                 <x-responsive-nav-link :href="route('admin.profile.edit')">
                     {{ __('Profile') }}
-                </x-responsive-nav-link>
-
-                <x-responsive-nav-link :href="route('admin.configuracoes.agenda.edit')">
-                    {{ __('Agenda (Google Calendar)') }}
                 </x-responsive-nav-link>
 
                 <!-- Authentication -->
