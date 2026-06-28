@@ -47,17 +47,61 @@
                 @endif
             </div>
 
-            {{-- Atalhos --}}
-            @if ($role === 'administrator')
-                <div class="flex flex-wrap gap-4">
-                    <a href="{{ route('admin.relatorios.index') }}" class="text-sm text-indigo-600 underline">
-                        {{ __('Gerar relatório') }}
-                    </a>
-                    <a href="{{ route('admin.users.index') }}" class="text-sm text-indigo-600 underline">
-                        {{ __('Gestão de usuários') }}
-                    </a>
+            {{-- Atalhos de cadastro — cada botão só aparece para quem tem permissão
+                 (a rota por trás também é protegida pela mesma Gate/Policy, não só o
+                 botão). --}}
+            <div class="bg-white shadow-sm sm:rounded-lg p-4">
+                <h3 class="text-sm font-medium text-gray-700 mb-3">{{ __('Ações rápidas') }}</h3>
+                <div class="flex flex-wrap gap-3">
+                    @can('manage-clients')
+                        <a href="{{ route('admin.clientes.create') }}" class="text-sm bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-md hover:bg-indigo-100">
+                            {{ __('+ Cliente') }}
+                        </a>
+                    @endcan
+
+                    @can('create', \App\Models\LegalCase::class)
+                        <a href="{{ route('admin.processos.create') }}" class="text-sm bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-md hover:bg-indigo-100">
+                            {{ __('+ Processo') }}
+                        </a>
+                    @endcan
+
+                    @can('manage-services')
+                        <a href="{{ route('admin.servicos.create') }}" class="text-sm bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-md hover:bg-indigo-100">
+                            {{ __('+ Serviço') }}
+                        </a>
+                    @endcan
+
+                    @can('create', \App\Models\Task::class)
+                        <a href="{{ route('admin.tarefas.create') }}" class="text-sm bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-md hover:bg-indigo-100">
+                            {{ __('+ Tarefa') }}
+                        </a>
+                    @endcan
+
+                    @can('view-financial')
+                        <a href="{{ route('admin.financeiro.create') }}" class="text-sm bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-md hover:bg-indigo-100">
+                            {{ __('+ Lançamento financeiro') }}
+                        </a>
+                    @endcan
+
+                    @can('manage-legal-areas')
+                        <a href="{{ route('admin.areas-juridicas.create') }}" class="text-sm bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-md hover:bg-indigo-100">
+                            {{ __('+ Área jurídica') }}
+                        </a>
+                    @endcan
+
+                    @can('manage-users')
+                        <a href="{{ route('admin.users.create') }}" class="text-sm bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-md hover:bg-indigo-100">
+                            {{ __('+ Usuário') }}
+                        </a>
+                    @endcan
+
+                    @can('view-reports')
+                        <a href="{{ route('admin.relatorios.index') }}" class="text-sm text-indigo-600 underline self-center">
+                            {{ __('Gerar relatório') }}
+                        </a>
+                    @endcan
                 </div>
-            @endif
+            </div>
 
             {{-- Prazos mais urgentes --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">

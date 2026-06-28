@@ -20,6 +20,10 @@
                     </span>
                     {{ $client->formatted_document_number }}
                 </div>
+                <div>
+                    <span class="text-gray-500">{{ __('Áreas jurídicas') }}:</span>
+                    {{ $client->legalAreas->pluck('name')->implode(', ') ?: '—' }}
+                </div>
             </div>
 
             @if ($financialSummary)

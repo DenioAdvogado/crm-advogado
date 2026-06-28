@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\Admin\CalendarSettingsController;
 use App\Http\Controllers\Admin\CaseController;
+use App\Http\Controllers\Admin\CaseUpdateController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EmailLogController;
 use App\Http\Controllers\Admin\FinancialController;
+use App\Http\Controllers\Admin\LegalAreaController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\TaskController;
@@ -74,6 +76,13 @@ Route::middleware('auth:web')->prefix('admin')->name('admin.')->group(function (
     Route::delete('/processos/{processo}', [CaseController::class, 'destroy'])->name('processos.destroy');
     Route::get('/processos/{processo}', [CaseController::class, 'show'])->name('processos.show');
 
+    // Atualizações de processo (case_updates) — CRUD direto, sem depender de concluir
+    // tarefa (Bloco 4). Mesma autorização da edição do processo.
+    Route::post('/processos/{processo}/atualizacoes', [CaseUpdateController::class, 'store'])->name('processos.atualizacoes.store');
+    Route::get('/processos/{processo}/atualizacoes/{atualizacao}/editar', [CaseUpdateController::class, 'edit'])->name('processos.atualizacoes.edit');
+    Route::put('/processos/{processo}/atualizacoes/{atualizacao}', [CaseUpdateController::class, 'update'])->name('processos.atualizacoes.update');
+    Route::delete('/processos/{processo}/atualizacoes/{atualizacao}', [CaseUpdateController::class, 'destroy'])->name('processos.atualizacoes.destroy');
+
     // Serviços (Bloco 9 — listagem; Bloco 10: CRUD completo, Gate "manage-services").
     Route::get('/servicos', [ServiceController::class, 'index'])->name('servicos.index');
     Route::get('/servicos/criar', [ServiceController::class, 'create'])->name('servicos.create');
@@ -81,6 +90,15 @@ Route::middleware('auth:web')->prefix('admin')->name('admin.')->group(function (
     Route::get('/servicos/{servico}/editar', [ServiceController::class, 'edit'])->name('servicos.edit');
     Route::put('/servicos/{servico}', [ServiceController::class, 'update'])->name('servicos.update');
     Route::delete('/servicos/{servico}', [ServiceController::class, 'destroy'])->name('servicos.destroy');
+
+    // Áreas jurídicas: CRUD completo, Gate "manage-legal-areas" (só Administrador para
+    // criar/editar/excluir; listagem aberta a todos os perfis internos).
+    Route::get('/areas-juridicas', [LegalAreaController::class, 'index'])->name('areas-juridicas.index');
+    Route::get('/areas-juridicas/criar', [LegalAreaController::class, 'create'])->name('areas-juridicas.create');
+    Route::post('/areas-juridicas', [LegalAreaController::class, 'store'])->name('areas-juridicas.store');
+    Route::get('/areas-juridicas/{area}/editar', [LegalAreaController::class, 'edit'])->name('areas-juridicas.edit');
+    Route::put('/areas-juridicas/{area}', [LegalAreaController::class, 'update'])->name('areas-juridicas.update');
+    Route::delete('/areas-juridicas/{area}', [LegalAreaController::class, 'destroy'])->name('areas-juridicas.destroy');
 
     // Auditoria de e-mails automáticos (Bloco 6) — só Administrador (Gate "view-email-logs").
     Route::middleware('can:view-email-logs')->prefix('emails')->name('emails.')->group(function () {

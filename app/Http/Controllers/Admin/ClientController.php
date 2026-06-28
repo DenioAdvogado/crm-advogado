@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\FinancialEntry;
+use App\Models\LegalArea;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -54,7 +55,7 @@ class ClientController extends Controller
     {
         $this->authorize('manage-clients');
 
-        return view('admin.clients.create');
+        return view('admin.clients.create', ['legalAreas' => LegalArea::orderBy('name')->get()]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -64,8 +65,11 @@ class ClientController extends Controller
         $validated = $this->validateClient($request);
         $validated['portal_password'] = Hash::make($validated['portal_password']);
         $validated['active'] = $request->boolean('active', true);
+        $legalAreaIds = $validated['legal_area_ids'] ?? [];
+        unset($validated['legal_area_ids']);
 
-        Client::create($validated);
+        $client = Client::create($validated);
+        $client->legalAreas()->sync($legalAreaIds);
 
         return redirect()->route('admin.clientes.index')->with('status', 'Cliente cadastrado com sucesso.');
     }
@@ -74,7 +78,12 @@ class ClientController extends Controller
     {
         $this->authorize('manage-clients');
 
-        return view('admin.clients.edit', ['client' => $cliente]);
+        $cliente->load('legalAreas');
+
+        return view('admin.clients.edit', [
+            'client' => $cliente,
+            'legalAreas' => LegalArea::orderBy('name')->get(),
+        ]);
     }
 
     public function update(Request $request, Client $cliente): RedirectResponse
@@ -83,6 +92,8 @@ class ClientController extends Controller
 
         $validated = $this->validateClient($request, $cliente);
         $validated['active'] = $request->boolean('active');
+        $legalAreaIds = $validated['legal_area_ids'] ?? [];
+        unset($validated['legal_area_ids']);
 
         // Senha do portal só é alterada se o campo for preenchido — em branco mantém a atual.
         if (! empty($validated['portal_password'])) {
@@ -92,6 +103,7 @@ class ClientController extends Controller
         }
 
         $cliente->update($validated);
+        $cliente->legalAreas()->sync($legalAreaIds);
 
         return redirect()->route('admin.clientes.show', $cliente)->with('status', 'Cliente atualizado com sucesso.');
     }
@@ -128,6 +140,8 @@ class ClientController extends Controller
             'address_country' => ['nullable', 'string', 'max:255'],
             'portal_password' => [$client ? 'nullable' : 'required', 'string', 'min:6'],
             'active' => ['nullable', 'boolean'],
+            'legal_area_ids' => ['nullable', 'array'],
+            'legal_area_ids.*' => ['exists:legal_areas,id'],
         ]);
     }
 

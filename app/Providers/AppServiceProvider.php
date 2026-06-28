@@ -68,6 +68,14 @@ class AppServiceProvider extends ServiceProvider
             return true;
         });
 
+        // Cadastro de áreas jurídicas (pedido do usuário após o Bloco 10, para fechar a
+        // lacuna de "todo cadastro precisa ser dinâmico"): só Administrador — é uma tabela
+        // de apoio/taxonomia, não um registro do dia a dia da operação como cliente/
+        // processo/serviço.
+        Gate::define('manage-legal-areas', function (User $user) {
+            return $user->isAdministrator();
+        });
+
         // Bloco 6: dispara o envio de e-mail ao cliente quando uma atualização de processo
         // é criada com notify_client = true.
         CaseUpdate::observe(CaseUpdateObserver::class);

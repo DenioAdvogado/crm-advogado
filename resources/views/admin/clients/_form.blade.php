@@ -88,6 +88,22 @@
     <x-text-input id="address_country" name="address_country" type="text" class="block mt-1 w-full" :value="old('address_country', $client?->address_country)" />
 </div>
 
+<div class="mt-4">
+    <x-input-label :value="__('Áreas jurídicas')" />
+    @php
+        $selectedAreaIds = old('legal_area_ids', $client?->legalAreas->pluck('id')->all() ?? []);
+    @endphp
+    <div class="mt-1 space-y-1">
+        @foreach ($legalAreas as $area)
+            <label class="flex items-center text-sm text-gray-700">
+                <input type="checkbox" name="legal_area_ids[]" value="{{ $area->id }}" class="rounded border-gray-300"
+                    @checked(in_array($area->id, $selectedAreaIds))>
+                <span class="ml-2">{{ $area->name }}</span>
+            </label>
+        @endforeach
+    </div>
+</div>
+
 @if ($client)
     <div class="mt-4 flex items-center">
         <input type="checkbox" id="active" name="active" value="1" class="rounded border-gray-300" @checked(old('active', $client->active))>
