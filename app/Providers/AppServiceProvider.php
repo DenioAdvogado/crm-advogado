@@ -50,6 +50,11 @@ class AppServiceProvider extends ServiceProvider
             return $user->isAdministrator();
         });
 
+        // Relatórios automáticos (Bloco 8): só Administrador.
+        Gate::define('view-reports', function (User $user) {
+            return $user->isAdministrator();
+        });
+
         // Bloco 6: dispara o envio de e-mail ao cliente quando uma atualização de processo
         // é criada com notify_client = true.
         CaseUpdate::observe(CaseUpdateObserver::class);

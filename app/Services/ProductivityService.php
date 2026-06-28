@@ -35,9 +35,19 @@ class ProductivityService
             ->count();
     }
 
+    public function countOverdue(User $user): int
+    {
+        return Task::where('responsible_id', $user->id)
+            ->where('status', 'overdue')
+            ->count();
+    }
+
     /**
-     * Relatório com todos os usuários internos ativos: tarefas concluídas hoje e na
-     * semana anterior. Usado em /admin/tarefas/produtividade (Bloco 4) e no Bloco 8.
+     * Relatório com todos os usuários internos ativos: tarefas concluídas hoje, na
+     * semana anterior, e em atraso atualmente. Usado em /admin/tarefas/produtividade
+     * (Bloco 4) e no relatório por e-mail (Bloco 8) — a chave "overdue_count" foi
+     * adicionada no Bloco 8 e é simplesmente ignorada pela view do Bloco 4, que só lê
+     * "completed_today"/"completed_last_week".
      */
     public function buildReport(): Collection
     {
@@ -55,6 +65,7 @@ class ProductivityService
                     'completed_last_week' => Task::where('responsible_id', $user->id)
                         ->whereBetween('completed_at', [$start, $end])
                         ->count(),
+                    'overdue_count' => $this->countOverdue($user),
                 ];
             });
     }

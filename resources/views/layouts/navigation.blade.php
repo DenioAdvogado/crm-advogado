@@ -38,6 +38,12 @@
                         </x-nav-link>
                     @endcan
 
+                    @can('view-reports')
+                        <x-nav-link :href="route('admin.relatorios.index')" :active="request()->routeIs('admin.relatorios.*')">
+                            {{ __('Relatórios') }}
+                        </x-nav-link>
+                    @endcan
+
                     @can('manage-users')
                         <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
                             {{ __('Usuários') }}
@@ -122,6 +128,12 @@
             @can('view-email-logs')
                 <x-responsive-nav-link :href="route('admin.emails.index')" :active="request()->routeIs('admin.emails.*')">
                     {{ __('E-mails') }}
+                </x-responsive-nav-link>
+            @endcan
+
+            @can('view-reports')
+                <x-responsive-nav-link :href="route('admin.relatorios.index')" :active="request()->routeIs('admin.relatorios.*')">
+                    {{ __('Relatórios') }}
                 </x-responsive-nav-link>
             @endcan
 

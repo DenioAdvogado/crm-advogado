@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\CalendarSettingsController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\EmailLogController;
 use App\Http\Controllers\Admin\FinancialController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
@@ -68,6 +69,12 @@ Route::middleware('auth:web')->prefix('admin')->name('admin.')->group(function (
         Route::get('/conectar', [CalendarSettingsController::class, 'connect'])->name('connect');
         Route::get('/callback', [CalendarSettingsController::class, 'callback'])->name('callback');
         Route::post('/desconectar', [CalendarSettingsController::class, 'disconnect'])->name('disconnect');
+    });
+
+    // Relatórios automáticos (Bloco 8) — só Administrador (Gate "view-reports").
+    Route::middleware('can:view-reports')->prefix('relatorios')->name('relatorios.')->group(function () {
+        Route::get('/', [ReportController::class, 'index'])->name('index');
+        Route::get('/download', [ReportController::class, 'download'])->name('download');
     });
 });
 

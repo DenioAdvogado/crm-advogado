@@ -20,3 +20,8 @@ Schedule::command('app:mark-overdue-tasks')->daily();
 // só a infraestrutura de agendamento é reaproveitada (mesmo Scheduler, mesmo cron único no
 // servidor rodando `php artisan schedule:run`), não a lógica.
 Schedule::command('app:mark-overdue-financial-entries')->daily();
+
+// Bloco 8: relatório diário (prazos, financeiro, produtividade) por e-mail ao
+// administrador. Horário configurável via ADMIN_REPORT_SEND_TIME no .env (padrão 07:00) —
+// não fica hardcoded para não exigir alterar código se o usuário quiser mudar o horário.
+Schedule::command('app:send-admin-report')->dailyAt(config('reports.send_time'));
