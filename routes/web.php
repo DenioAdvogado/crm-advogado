@@ -53,16 +53,34 @@ Route::middleware('auth:web')->prefix('admin')->name('admin.')->group(function (
         Route::put('/{lancamento}', [FinancialController::class, 'update'])->name('update');
     });
 
-    // Clientes (Bloco 9: listagem; Bloco 5: perfil/resumo financeiro) — só leitura.
+    // Clientes (Bloco 9: listagem/perfil; Bloco 10: CRUD completo, Gate "manage-clients").
+    // Rotas de texto fixo ("criar") sempre antes da rota com parâmetro ("{cliente}"), senão
+    // o binding implícito do Eloquent tentaria resolver "criar" como um ID.
     Route::get('/clientes', [ClientController::class, 'index'])->name('clientes.index');
+    Route::get('/clientes/criar', [ClientController::class, 'create'])->name('clientes.create');
+    Route::post('/clientes', [ClientController::class, 'store'])->name('clientes.store');
+    Route::get('/clientes/{cliente}/editar', [ClientController::class, 'edit'])->name('clientes.edit');
+    Route::put('/clientes/{cliente}', [ClientController::class, 'update'])->name('clientes.update');
+    Route::delete('/clientes/{cliente}', [ClientController::class, 'destroy'])->name('clientes.destroy');
     Route::get('/clientes/{cliente}', [ClientController::class, 'show'])->name('clientes.show');
 
-    // Processos (Bloco 9 — só leitura, reaproveita a LegalCasePolicy do Bloco 2).
+    // Processos (Bloco 9 — listagem/detalhe; Bloco 10: CRUD completo via LegalCasePolicy,
+    // já criada no Bloco 2 e agora totalmente em uso).
     Route::get('/processos', [CaseController::class, 'index'])->name('processos.index');
+    Route::get('/processos/criar', [CaseController::class, 'create'])->name('processos.create');
+    Route::post('/processos', [CaseController::class, 'store'])->name('processos.store');
+    Route::get('/processos/{processo}/editar', [CaseController::class, 'edit'])->name('processos.edit');
+    Route::put('/processos/{processo}', [CaseController::class, 'update'])->name('processos.update');
+    Route::delete('/processos/{processo}', [CaseController::class, 'destroy'])->name('processos.destroy');
     Route::get('/processos/{processo}', [CaseController::class, 'show'])->name('processos.show');
 
-    // Serviços (Bloco 9 — só leitura).
+    // Serviços (Bloco 9 — listagem; Bloco 10: CRUD completo, Gate "manage-services").
     Route::get('/servicos', [ServiceController::class, 'index'])->name('servicos.index');
+    Route::get('/servicos/criar', [ServiceController::class, 'create'])->name('servicos.create');
+    Route::post('/servicos', [ServiceController::class, 'store'])->name('servicos.store');
+    Route::get('/servicos/{servico}/editar', [ServiceController::class, 'edit'])->name('servicos.edit');
+    Route::put('/servicos/{servico}', [ServiceController::class, 'update'])->name('servicos.update');
+    Route::delete('/servicos/{servico}', [ServiceController::class, 'destroy'])->name('servicos.destroy');
 
     // Auditoria de e-mails automáticos (Bloco 6) — só Administrador (Gate "view-email-logs").
     Route::middleware('can:view-email-logs')->prefix('emails')->name('emails.')->group(function () {

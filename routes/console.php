@@ -25,3 +25,7 @@ Schedule::command('app:mark-overdue-financial-entries')->daily();
 // administrador. Horário configurável via ADMIN_REPORT_SEND_TIME no .env (padrão 07:00) —
 // não fica hardcoded para não exigir alterar código se o usuário quiser mudar o horário.
 Schedule::command('app:send-admin-report')->dailyAt(config('reports.send_time'));
+
+// Bloco 10: backup diário do banco (local + OneDrive, se configurado). Horário de
+// madrugada para não competir com uso normal do sistema.
+Schedule::command('app:backup-database')->dailyAt('03:00');

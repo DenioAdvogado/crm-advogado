@@ -1,6 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Serviços') }}</h2>
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Serviços') }}</h2>
+            @can('manage-services')
+                <a href="{{ route('admin.servicos.create') }}" class="text-sm text-indigo-600 underline">{{ __('Novo serviço') }}</a>
+            @endcan
+        </div>
     </x-slot>
 
     <div class="py-12">
@@ -15,6 +20,7 @@
                             <th class="px-4 py-2">{{ __('Responsável') }}</th>
                             <th class="px-4 py-2">{{ __('Prazo') }}</th>
                             <th class="px-4 py-2">{{ __('Status') }}</th>
+                            <th class="px-4 py-2"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -32,6 +38,11 @@
                                         'completed' => 'Concluído',
                                         default => $service->status,
                                     } }}
+                                </td>
+                                <td class="px-4 py-2">
+                                    @can('manage-services')
+                                        <a href="{{ route('admin.servicos.edit', $service) }}" class="underline text-indigo-600">{{ __('Editar') }}</a>
+                                    @endcan
                                 </td>
                             </tr>
                         @endforeach

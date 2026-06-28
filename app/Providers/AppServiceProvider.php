@@ -55,6 +55,19 @@ class AppServiceProvider extends ServiceProvider
             return $user->isAdministrator();
         });
 
+        // Cadastro de clientes (Bloco 10 — completa o CRUD que faltava do Bloco 9):
+        // Administrador e Advogado podem criar/editar; Funcionário só visualiza.
+        Gate::define('manage-clients', function (User $user) {
+            return $user->isAdministrator() || $user->isLawyer();
+        });
+
+        // Cadastro de serviços (Bloco 10): qualquer perfil interno pode criar/editar — não
+        // há regra de "dono" para serviços em nenhum bloco anterior, diferente de
+        // tarefas/processos.
+        Gate::define('manage-services', function (User $user) {
+            return true;
+        });
+
         // Bloco 6: dispara o envio de e-mail ao cliente quando uma atualização de processo
         // é criada com notify_client = true.
         CaseUpdate::observe(CaseUpdateObserver::class);

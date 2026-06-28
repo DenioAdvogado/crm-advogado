@@ -1,6 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Processos') }}</h2>
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Processos') }}</h2>
+            @can('create', \App\Models\LegalCase::class)
+                <a href="{{ route('admin.processos.create') }}" class="text-sm text-indigo-600 underline">{{ __('Novo processo') }}</a>
+            @endcan
+        </div>
     </x-slot>
 
     <div class="py-12">

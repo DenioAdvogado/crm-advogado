@@ -1,6 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Clientes') }}</h2>
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Clientes') }}</h2>
+            @can('manage-clients')
+                <a href="{{ route('admin.clientes.create') }}" class="text-sm text-indigo-600 underline">{{ __('Novo cliente') }}</a>
+            @endcan
+        </div>
     </x-slot>
 
     <div class="py-12">

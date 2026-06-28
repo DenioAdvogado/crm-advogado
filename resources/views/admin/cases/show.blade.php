@@ -1,6 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Processo') }} {{ $case->case_number }}</h2>
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Processo') }} {{ $case->case_number }}</h2>
+            @can('update', $case)
+                <a href="{{ route('admin.processos.edit', $case) }}" class="text-sm text-indigo-600 underline">{{ __('Editar') }}</a>
+            @endcan
+        </div>
     </x-slot>
 
     <div class="py-12">

@@ -43,4 +43,15 @@ return [
         'redirect_uri' => env('GOOGLE_CALENDAR_REDIRECT_URI'),
     ],
 
+    // Envio do backup diário do banco para o OneDrive (Bloco 10) — ver DEPLOY.md para o
+    // roteiro completo de registro do app no Azure AD e obtenção do refresh token.
+    'onedrive' => [
+        'tenant_id' => env('ONEDRIVE_TENANT_ID', 'common'),
+        'client_id' => env('ONEDRIVE_CLIENT_ID'),
+        'client_secret' => env('ONEDRIVE_CLIENT_SECRET'),
+        'redirect_uri' => env('ONEDRIVE_REDIRECT_URI', 'http://localhost'),
+        'refresh_token' => env('ONEDRIVE_REFRESH_TOKEN'),
+        'folder' => env('ONEDRIVE_BACKUP_FOLDER', 'Backups/CRM'),
+    ],
+
 ];
