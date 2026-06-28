@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\Admin\EmailLogController;
 use App\Http\Controllers\Admin\FinancialController;
 use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\Admin\UserController;
@@ -51,6 +52,12 @@ Route::middleware('auth:web')->prefix('admin')->name('admin.')->group(function (
 
     // Perfil interno do cliente (Bloco 5) — exibe o resumo financeiro quando aplicável.
     Route::get('/clientes/{cliente}', [ClientController::class, 'show'])->name('clientes.show');
+
+    // Auditoria de e-mails automáticos (Bloco 6) — só Administrador (Gate "view-email-logs").
+    Route::middleware('can:view-email-logs')->prefix('emails')->name('emails.')->group(function () {
+        Route::get('/', [EmailLogController::class, 'index'])->name('index');
+        Route::post('/{email}/reenviar', [EmailLogController::class, 'resend'])->name('resend');
+    });
 });
 
 require __DIR__.'/auth.php';

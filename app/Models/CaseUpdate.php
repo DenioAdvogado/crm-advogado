@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class CaseUpdate extends Model
 {
@@ -32,5 +33,10 @@ class CaseUpdate extends Model
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
+    }
+
+    public function emailLog(): HasOne
+    {
+        return $this->hasOne(EmailLog::class, 'case_update_id');
     }
 }

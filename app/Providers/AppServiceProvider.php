@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\CaseUpdate;
 use App\Models\User;
+use App\Observers\CaseUpdateObserver;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -42,5 +44,14 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('view-productivity', function (User $user) {
             return $user->isAdministrator() || $user->isLawyer();
         });
+
+        // Auditoria de e-mails (Bloco 6): só Administrador.
+        Gate::define('view-email-logs', function (User $user) {
+            return $user->isAdministrator();
+        });
+
+        // Bloco 6: dispara o envio de e-mail ao cliente quando uma atualização de processo
+        // é criada com notify_client = true.
+        CaseUpdate::observe(CaseUpdateObserver::class);
     }
 }

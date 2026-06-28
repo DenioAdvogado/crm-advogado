@@ -84,6 +84,11 @@ class Client extends Authenticatable implements CanResetPasswordContract
         return $this->hasMany(FinancialEntry::class, 'client_id');
     }
 
+    public function emailLogs(): HasMany
+    {
+        return $this->hasMany(EmailLog::class, 'client_id');
+    }
+
     /**
      * Formata document_number conforme país/tipo de pessoa (Bloco 3):
      * - Brasil + individual: CPF (000.000.000-00)
