@@ -83,4 +83,31 @@ class Client extends Authenticatable implements CanResetPasswordContract
     {
         return $this->hasMany(FinancialEntry::class, 'client_id');
     }
+
+    /**
+     * Formata document_number conforme país/tipo de pessoa (Bloco 3):
+     * - Brasil + individual: CPF (000.000.000-00)
+     * - Brasil + company: CNPJ (00.000.000/0000-00)
+     * - Portugal (individual ou company): NIF (000000000, sem pontuação)
+     * Se o número de dígitos não bater com o esperado, devolve o valor original sem
+     * máscara, para não exibir algo enganoso com dados de teste/incompletos.
+     */
+    public function getFormattedDocumentNumberAttribute(): string
+    {
+        $digits = preg_replace('/\D/', '', (string) $this->document_number);
+
+        if ($this->country === 'Brazil' && $this->person_type === 'individual' && strlen($digits) === 11) {
+            return preg_replace('/(\d{3})(\d{3})(\d{3})(\d{2})/', '$1.$2.$3-$4', $digits);
+        }
+
+        if ($this->country === 'Brazil' && $this->person_type === 'company' && strlen($digits) === 14) {
+            return preg_replace('/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/', '$1.$2.$3/$4-$5', $digits);
+        }
+
+        if ($this->country === 'Portugal' && strlen($digits) === 9) {
+            return $digits;
+        }
+
+        return $this->document_number;
+    }
 }

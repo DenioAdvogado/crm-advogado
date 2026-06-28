@@ -63,4 +63,9 @@ class LegalCase extends Model
     {
         return $this->hasMany(FinancialEntry::class, 'case_id');
     }
+
+    public function updates(): HasMany
+    {
+        return $this->hasMany(CaseUpdate::class, 'case_id')->latest();
+    }
 }

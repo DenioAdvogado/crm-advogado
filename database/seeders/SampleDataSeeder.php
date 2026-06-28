@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\CaseUpdate;
 use App\Models\Client;
 use App\Models\FinancialEntry;
 use App\Models\LegalArea;
@@ -153,6 +154,19 @@ class SampleDataSeeder extends Seeder
             'description' => 'Conferir NIF, Cartão de Cidadão e certidão de nascimento dos filhos.',
             'due_date' => '2026-08-10 17:00:00',
             'status' => 'pending',
+        ]);
+
+        // Histórico de atualizações de processo (Bloco 3 — também usado no Bloco 6).
+        CaseUpdate::create([
+            'case_id' => $brazilCase->id,
+            'author_id' => $lawyer->id,
+            'description' => 'Petição inicial protocolada com sucesso. Aguardando audiência.',
+        ]);
+
+        CaseUpdate::create([
+            'case_id' => $portugalCase->id,
+            'author_id' => $lawyer->id,
+            'description' => 'Requerimento inicial protocolado. Aguardando designação de data de conferência.',
         ]);
 
         FinancialEntry::create([
