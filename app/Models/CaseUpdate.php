@@ -14,7 +14,15 @@ class CaseUpdate extends Model
         'case_id',
         'description',
         'author_id',
+        'notify_client',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'notify_client' => 'boolean',
+        ];
+    }
 
     public function case(): BelongsTo
     {

@@ -37,5 +37,10 @@ class AppServiceProvider extends ServiceProvider
 
             return $user->isStaff() && $user->can_access_financial;
         });
+
+        // Painel de produtividade (Bloco 4): só Administrador e Advogado.
+        Gate::define('view-productivity', function (User $user) {
+            return $user->isAdministrator() || $user->isLawyer();
+        });
     }
 }

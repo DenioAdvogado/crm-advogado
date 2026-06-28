@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,10 +22,29 @@ class Task extends Model
         'status',
     ];
 
+    /**
+     * Filtra a query conforme a visibilidade de tarefas do Bloco 4 (mesma regra da
+     * TaskPolicy::view, aplicada em lote para a listagem): administrador vê tudo; advogado
+     * vê as próprias ou todas se can_view_all_cases; funcionário só vê as próprias.
+     */
+    public function scopeVisibleTo(Builder $query, User $user): Builder
+    {
+        if ($user->isAdministrator()) {
+            return $query;
+        }
+
+        if ($user->isLawyer() && $user->can_view_all_cases) {
+            return $query;
+        }
+
+        return $query->where('responsible_id', $user->id);
+    }
+
     protected function casts(): array
     {
         return [
             'due_date' => 'datetime',
+            'completed_at' => 'datetime',
         ];
     }
 
@@ -41,5 +61,19 @@ class Task extends Model
     public function responsible(): BelongsTo
     {
         return $this->belongsTo(User::class, 'responsible_id');
+    }
+
+    /**
+     * Processo relacionado a esta tarefa, vindo direto de "case_id" ou, se a tarefa estiver
+     * vinculada a um serviço em vez de um processo, do "case_id" desse serviço. Usado ao
+     * concluir a tarefa para saber em qual processo registrar a atualização (Bloco 4).
+     */
+    public function relatedCase(): ?LegalCase
+    {
+        if ($this->case_id) {
+            return $this->case;
+        }
+
+        return $this->service?->case;
     }
 }

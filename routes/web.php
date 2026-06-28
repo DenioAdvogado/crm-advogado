@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,18 @@ Route::middleware('auth:web')->prefix('admin')->name('admin.')->group(function (
     Route::get('/test-financial-access', function () {
         return 'OK: acesso financeiro permitido para '.auth('web')->user()->name;
     })->middleware('can:view-financial')->name('test-financial-access');
+
+    // Módulo de tarefas/prazos (Bloco 4). Rotas em português, conforme decisão do Bloco 3.
+    Route::prefix('tarefas')->name('tarefas.')->group(function () {
+        Route::get('/', [TaskController::class, 'index'])->name('index');
+        Route::get('/criar', [TaskController::class, 'create'])->name('create');
+        Route::post('/', [TaskController::class, 'store'])->name('store');
+        Route::get('/produtividade', [TaskController::class, 'productivity'])->name('productivity');
+        Route::get('/{tarefa}/editar', [TaskController::class, 'edit'])->name('edit');
+        Route::put('/{tarefa}', [TaskController::class, 'update'])->name('update');
+        Route::get('/{tarefa}/concluir', [TaskController::class, 'completeForm'])->name('complete-form');
+        Route::post('/{tarefa}/concluir', [TaskController::class, 'complete'])->name('complete');
+    });
 });
 
 require __DIR__.'/auth.php';

@@ -16,6 +16,16 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
+                    <x-nav-link :href="route('admin.tarefas.index')" :active="request()->routeIs('admin.tarefas.*')">
+                        {{ __('Tarefas') }}
+                    </x-nav-link>
+
+                    @can('view-productivity')
+                        <x-nav-link :href="route('admin.tarefas.productivity')" :active="request()->routeIs('admin.tarefas.productivity')">
+                            {{ __('Produtividade') }}
+                        </x-nav-link>
+                    @endcan
+
                     @can('manage-users')
                         <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
                             {{ __('Usuários') }}
@@ -76,6 +86,16 @@
             <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('admin.tarefas.index')" :active="request()->routeIs('admin.tarefas.*')">
+                {{ __('Tarefas') }}
+            </x-responsive-nav-link>
+
+            @can('view-productivity')
+                <x-responsive-nav-link :href="route('admin.tarefas.productivity')" :active="request()->routeIs('admin.tarefas.productivity')">
+                    {{ __('Produtividade') }}
+                </x-responsive-nav-link>
+            @endcan
 
             @can('manage-users')
                 <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
