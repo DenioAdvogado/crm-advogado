@@ -11,14 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // "users" é exclusiva para a equipe interna do escritório (administrator, lawyer,
+        // staff). Clientes têm tabela própria ("clients"), com acesso de portal isolado das
+        // permissões internas. Login/autenticação serão implementados no Bloco 2 — aqui só
+        // a estrutura de dados.
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('phone')->nullable();
+            $table->enum('access_level', ['administrator', 'lawyer', 'staff']);
+            $table->boolean('active')->default(true);
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
