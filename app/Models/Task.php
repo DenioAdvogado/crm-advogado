@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Jobs\DeleteTaskGoogleCalendarEvent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -21,6 +22,19 @@ class Task extends Model
         'due_date',
         'status',
     ];
+
+    /**
+     * Bloco 7: tarefa excluída (soft delete) não deve continuar aparecendo na agenda do
+     * responsável. Feito como model event (não no controller) porque hoje não existe rota
+     * de exclusão de tarefas, mas se uma for adicionada depois, a sincronização já funciona
+     * automaticamente sem precisar lembrar de chamar isso de novo.
+     */
+    protected static function booted(): void
+    {
+        static::deleted(function (Task $task) {
+            DeleteTaskGoogleCalendarEvent::dispatch($task->id);
+        });
+    }
 
     /**
      * Filtra a query conforme a visibilidade de tarefas do Bloco 4 (mesma regra da

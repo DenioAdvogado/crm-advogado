@@ -13,7 +13,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 #[Fillable(['name', 'email', 'password', 'phone', 'access_level', 'active', 'can_view_all_cases', 'can_access_financial'])]
-#[Hidden(['password', 'remember_token'])]
+#[Hidden(['password', 'remember_token', 'google_access_token', 'google_refresh_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
@@ -32,7 +32,17 @@ class User extends Authenticatable
             'active' => 'boolean',
             'can_view_all_cases' => 'boolean',
             'can_access_financial' => 'boolean',
+            // Tokens do Google Calendar (Bloco 7) criptografados em repouso.
+            'google_access_token' => 'encrypted',
+            'google_refresh_token' => 'encrypted',
+            'google_token_expires_at' => 'datetime',
+            'google_calendar_connected_at' => 'datetime',
         ];
+    }
+
+    public function isGoogleCalendarConnected(): bool
+    {
+        return ! empty($this->google_refresh_token);
     }
 
     public function isAdministrator(): bool

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\DeleteTaskGoogleCalendarEvent;
+use App\Jobs\SyncTaskWithGoogleCalendar;
 use App\Models\CaseUpdate;
 use App\Models\LegalCase;
 use App\Models\Service;
@@ -72,7 +74,11 @@ class TaskController extends Controller
 
         $validated = $this->validateTask($request);
 
-        Task::create([...$validated, 'status' => 'pending']);
+        $task = Task::create([...$validated, 'status' => 'pending']);
+
+        // Bloco 7: sincroniza com o Google Calendar do responsável em fila — não bloqueia
+        // esta resposta nem falha a criação da tarefa se a integração estiver fora do ar.
+        SyncTaskWithGoogleCalendar::dispatch($task->id);
 
         return redirect()->route('admin.tarefas.index')->with('status', 'Tarefa criada com sucesso.');
     }
@@ -91,6 +97,15 @@ class TaskController extends Controller
         $validated = $this->validateTask($request, $tarefa);
 
         $tarefa->update($validated);
+
+        // Bloco 7: se a edição concluiu a tarefa por aqui (em vez de usar o fluxo dedicado
+        // de "Concluir"), remove o evento; senão, sincroniza o evento (prazo pode ter
+        // mudado). Em ambos os casos, em fila.
+        if ($tarefa->status === 'completed') {
+            DeleteTaskGoogleCalendarEvent::dispatch($tarefa->id);
+        } else {
+            SyncTaskWithGoogleCalendar::dispatch($tarefa->id);
+        }
 
         return redirect()->route('admin.tarefas.index')->with('status', 'Tarefa atualizada com sucesso.');
     }
@@ -121,6 +136,9 @@ class TaskController extends Controller
             'status' => 'completed',
             'completed_at' => now(),
         ])->save();
+
+        // Bloco 7: tarefa concluída não precisa mais aparecer na agenda do responsável.
+        DeleteTaskGoogleCalendarEvent::dispatch($tarefa->id);
 
         $relatedCase = $tarefa->relatedCase();
 

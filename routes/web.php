@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CalendarSettingsController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\EmailLogController;
 use App\Http\Controllers\Admin\FinancialController;
@@ -57,6 +58,16 @@ Route::middleware('auth:web')->prefix('admin')->name('admin.')->group(function (
     Route::middleware('can:view-email-logs')->prefix('emails')->name('emails.')->group(function () {
         Route::get('/', [EmailLogController::class, 'index'])->name('index');
         Route::post('/{email}/reenviar', [EmailLogController::class, 'resend'])->name('resend');
+    });
+
+    // Conexão com Google Calendar (Bloco 7) — cada usuário interno conecta a própria conta,
+    // sem Gate de restrição (Administrador, Advogado e Funcionário podem conectar a si
+    // mesmos).
+    Route::prefix('configuracoes/agenda')->name('configuracoes.agenda.')->group(function () {
+        Route::get('/', [CalendarSettingsController::class, 'edit'])->name('edit');
+        Route::get('/conectar', [CalendarSettingsController::class, 'connect'])->name('connect');
+        Route::get('/callback', [CalendarSettingsController::class, 'callback'])->name('callback');
+        Route::post('/desconectar', [CalendarSettingsController::class, 'disconnect'])->name('disconnect');
     });
 });
 
