@@ -100,7 +100,7 @@ class ReportService
             ->orderBy('due_date')
             ->get()
             ->map(fn (FinancialEntry $entry) => [
-                'client' => $entry->client->name,
+                'client' => $entry->client?->name ?? '— cliente removido —',
                 'case_number' => $entry->case?->case_number ?? '—',
                 'description' => $entry->description,
                 'amount' => (float) $entry->amount,
@@ -120,7 +120,7 @@ class ReportService
             ->get()
             ->groupBy('client_id')
             ->map(fn (Collection $entries) => [
-                'client' => $entries->first()->client->name,
+                'client' => $entries->first()->client?->name ?? '— cliente removido —',
                 'total' => (float) $entries->sum('amount'),
             ])
             ->values();

@@ -197,7 +197,7 @@ class GoogleCalendarService
         $lines = [];
 
         if ($relatedCase) {
-            $lines[] = 'Cliente: '.$relatedCase->client->name;
+            $lines[] = 'Cliente: '.($relatedCase->client?->name ?? '— cliente removido —');
             $lines[] = 'Processo: '.($relatedCase->case_number ?? '#'.$relatedCase->id);
         }
 

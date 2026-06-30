@@ -40,8 +40,8 @@
                         @foreach ($cases as $case)
                             <tr class="border-t">
                                 <td class="px-4 py-2">{{ $case->case_number ?? '—' }}</td>
-                                <td class="px-4 py-2">{{ $case->client->name }}</td>
-                                <td class="px-4 py-2">{{ $case->legalArea->name }}</td>
+                                <td class="px-4 py-2">{{ $case->client?->name ?? '— cliente removido —' }}</td>
+                                <td class="px-4 py-2">{{ $case->legalArea?->name ?? '—' }}</td>
                                 <td class="px-4 py-2">{{ $case->responsibleLawyer?->name ?? '—' }}</td>
                                 <td class="px-4 py-2">
                                     {{ match ($case->status) {

@@ -8,7 +8,7 @@
         <option value="">{{ __('— Nenhum —') }}</option>
         @foreach ($cases as $case)
             <option value="{{ $case->id }}" @selected(old('case_id', $task?->case_id) == $case->id)>
-                {{ $case->case_number ?? ('#'.$case->id) }} — {{ $case->client->name }}
+                {{ $case->case_number ?? ('#'.$case->id) }} — {{ $case->client?->name ?? '— cliente removido —' }}
             </option>
         @endforeach
     </select>
@@ -21,7 +21,7 @@
         <option value="">{{ __('— Nenhum —') }}</option>
         @foreach ($services as $service)
             <option value="{{ $service->id }}" @selected(old('service_id', $task?->service_id) == $service->id)>
-                {{ $service->description }} — {{ $service->client->name }}
+                {{ $service->description }} — {{ $service->client?->name ?? '— cliente removido —' }}
             </option>
         @endforeach
     </select>

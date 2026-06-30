@@ -27,7 +27,7 @@
                         @foreach ($services as $service)
                             <tr class="border-t">
                                 <td class="px-4 py-2">{{ $service->description }}</td>
-                                <td class="px-4 py-2">{{ $service->client->name }}</td>
+                                <td class="px-4 py-2">{{ $service->client?->name ?? '— cliente removido —' }}</td>
                                 <td class="px-4 py-2">{{ $service->case?->case_number ?? '—' }}</td>
                                 <td class="px-4 py-2">{{ $service->responsible?->name ?? '—' }}</td>
                                 <td class="px-4 py-2">{{ $service->execution_deadline?->format('d/m/Y') ?? '—' }}</td>

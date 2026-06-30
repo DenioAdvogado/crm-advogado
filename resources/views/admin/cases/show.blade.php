@@ -11,8 +11,15 @@
     <div class="py-12">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 space-y-2 text-sm">
-                <div><span class="text-gray-500">{{ __('Cliente') }}:</span> <a href="{{ route('admin.clientes.show', $case->client) }}" class="underline text-indigo-600">{{ $case->client->name }}</a></div>
-                <div><span class="text-gray-500">{{ __('Área jurídica') }}:</span> {{ $case->legalArea->name }}</div>
+                <div>
+                    <span class="text-gray-500">{{ __('Cliente') }}:</span>
+                    @if ($case->client)
+                        <a href="{{ route('admin.clientes.show', $case->client) }}" class="underline text-indigo-600">{{ $case->client->name }}</a>
+                    @else
+                        <span class="text-gray-400">— cliente removido —</span>
+                    @endif
+                </div>
+                <div><span class="text-gray-500">{{ __('Área jurídica') }}:</span> {{ $case->legalArea?->name ?? '—' }}</div>
                 <div><span class="text-gray-500">{{ __('Responsável') }}:</span> {{ $case->responsibleLawyer?->name ?? '—' }}</div>
                 <div><span class="text-gray-500">{{ __('Status') }}:</span> {{ $case->status }}</div>
                 <div><span class="text-gray-500">{{ __('Data de abertura') }}:</span> {{ $case->opened_at?->format('d/m/Y') }}</div>

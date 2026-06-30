@@ -24,8 +24,8 @@
                     <tbody>
                         @foreach ($logs as $log)
                             <tr class="border-t">
-                                <td class="px-4 py-2">{{ $log->client->name }}</td>
-                                <td class="px-4 py-2">{{ $log->caseUpdate->case->case_number ?? '—' }}</td>
+                                <td class="px-4 py-2">{{ $log->client?->name ?? '— cliente removido —' }}</td>
+                                <td class="px-4 py-2">{{ $log->caseUpdate?->case?->case_number ?? '—' }}</td>
                                 <td class="px-4 py-2">{{ \Illuminate\Support\Str::limit($log->caseUpdate->description, 50) }}</td>
                                 <td class="px-4 py-2">{{ $log->sent_at?->format('d/m/Y H:i') ?? '—' }}</td>
                                 <td class="px-4 py-2">

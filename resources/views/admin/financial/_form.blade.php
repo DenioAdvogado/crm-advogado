@@ -20,7 +20,7 @@
         <option value="">{{ __('— Nenhum —') }}</option>
         @foreach ($cases as $case)
             <option value="{{ $case->id }}" @selected(old('case_id', $entry?->case_id) == $case->id)>
-                {{ $case->case_number ?? ('#'.$case->id) }} — {{ $case->client->name }}
+                {{ $case->case_number ?? ('#'.$case->id) }} — {{ $case->client?->name ?? '— cliente removido —' }}
             </option>
         @endforeach
     </select>

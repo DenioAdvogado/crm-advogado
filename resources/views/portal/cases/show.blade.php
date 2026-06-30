@@ -15,7 +15,7 @@
 
                 <div>
                     <span class="text-sm text-gray-500">{{ __('Área jurídica') }}</span>
-                    <p class="font-medium">{{ $case->legalArea->name }}</p>
+                    <p class="font-medium">{{ $case->legalArea?->name ?? '—' }}</p>
                 </div>
 
                 <div>

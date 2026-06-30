@@ -125,7 +125,7 @@ class DashboardController extends Controller
 
             $financialEntries = $financialQuery->get()->map(fn (FinancialEntry $entry) => [
                 'type' => 'Financeiro',
-                'label' => $entry->client->name.' — '.$entry->description,
+                'label' => ($entry->client?->name ?? '— cliente removido —').' — '.$entry->description,
                 'date' => $entry->due_date,
             ]);
         }
