@@ -22,13 +22,29 @@ class Client extends Authenticatable implements CanResetPasswordContract
         'country',
         'document_number',
         'secondary_document_number',
+        'nationality',
+        'marital_status',
+        'stable_union',
+        'profession',
+        'birth_date',
+        'document_issuer',
+        'mother_name',
+        'father_name',
         'phone',
         'email',
         'address_street',
+        'address_number',
+        'address_complement',
+        'address_neighborhood',
         'address_city',
         'address_state',
         'address_zipcode',
         'address_country',
+        'company_legal_name',
+        'company_trade_name',
+        'legal_representative',
+        'legal_representative_document',
+        'legal_representative_role',
         'portal_password',
         'active',
     ];
@@ -41,12 +57,14 @@ class Client extends Authenticatable implements CanResetPasswordContract
     {
         return [
             'active' => 'boolean',
+            'stable_union' => 'boolean',
+            'birth_date' => 'date',
         ];
     }
 
     /**
-     * O login do portal usa o campo "portal_password" em vez do "password" padrão do
-     * Eloquent, já que esta tabela também guarda dados de negócio (não é uma tabela de auth
+     * O login do portal usa o campo "portal_password" em vez do "password" padrÃ£o do
+     * Eloquent, jÃ¡ que esta tabela tambÃ©m guarda dados de negÃ³cio (nÃ£o Ã© uma tabela de auth
      * dedicada). Por isso sobrescrevemos getAuthPassword().
      */
     public function getAuthPassword(): string
@@ -90,12 +108,12 @@ class Client extends Authenticatable implements CanResetPasswordContract
     }
 
     /**
-     * Formata document_number conforme país/tipo de pessoa (Bloco 3):
+     * Formata document_number conforme paÃ­s/tipo de pessoa (Bloco 3):
      * - Brasil + individual: CPF (000.000.000-00)
      * - Brasil + company: CNPJ (00.000.000/0000-00)
-     * - Portugal (individual ou company): NIF (000000000, sem pontuação)
-     * Se o número de dígitos não bater com o esperado, devolve o valor original sem
-     * máscara, para não exibir algo enganoso com dados de teste/incompletos.
+     * - Portugal (individual ou company): NIF (000000000, sem pontuaÃ§Ã£o)
+     * Se o nÃºmero de dÃ­gitos nÃ£o bater com o esperado, devolve o valor original sem
+     * mÃ¡scara, para nÃ£o exibir algo enganoso com dados de teste/incompletos.
      */
     public function getFormattedDocumentNumberAttribute(): string
     {
