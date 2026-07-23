@@ -1,5 +1,5 @@
 [variables]
-DOCUMENT_ROOT = "/app/public"
+NIXPACKS_PHP_ROOT_DIR = "/app/public"
 
 [start]
-cmd = "cd /app && php artisan migrate --force || true && node /assets/scripts/prestart.mjs /assets/nginx.template.conf /nginx.conf && sed -i 's|root [^;]*;|root /app/public;|g' /nginx.conf && sed -i '/index.html index.htm index.php;/a location / { try_files $uri $uri/ /index.php?$query_string; }' /nginx.conf && cp /nginx.conf /app/public/_nginxdebug.txt && (php-fpm -y /assets/php-fpm.conf & nginx -c /nginx.conf)"
+cmd = "cd /app && php artisan migrate --force || true && node /assets/scripts/prestart.mjs /assets/nginx.template.conf /nginx.conf && cp /nginx.conf /app/public/_nginxdebug.txt && (php-fpm -y /assets/php-fpm.conf & nginx -c /nginx.conf)"
