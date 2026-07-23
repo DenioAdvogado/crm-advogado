@@ -17,9 +17,9 @@ use Illuminate\View\View;
 class ClientController extends Controller
 {
     /**
-     * Listagem simples de clientes (Bloco 9 — leitura). Aberta a todos os perfis internos:
-     * clientes não são "donos" de um único advogado no schema (um cliente pode ter
-     * processos com responsáveis diferentes), então não há uma regra de visibilidade
+     * Listagem simples de clientes (Bloco 9 â leitura). Aberta a todos os perfis internos:
+     * clientes nÃ£o sÃ£o "donos" de um Ãºnico advogado no schema (um cliente pode ter
+     * processos com responsÃ¡veis diferentes), entÃ£o nÃ£o hÃ¡ uma regra de visibilidade
      * individual a aplicar aqui como existe para processos/tarefas.
      */
     public function index(): View
@@ -30,7 +30,7 @@ class ClientController extends Controller
     }
 
     /**
-     * Perfil interno do cliente (Bloco 5): dados cadastrais e, se o usuário tiver a Gate
+     * Perfil interno do cliente (Bloco 5): dados cadastrais e, se o usuÃ¡rio tiver a Gate
      * "view-financial", o resumo financeiro do cliente.
      */
     public function show(Client $cliente): View
@@ -48,8 +48,8 @@ class ClientController extends Controller
     }
 
     /**
-     * CRUD completo de clientes (Bloco 10 — completa a lacuna deixada no Bloco 9, a pedido
-     * explícito do usuário). Gate "manage-clients": Administrador e Advogado.
+     * CRUD completo de clientes (Bloco 10 â completa a lacuna deixada no Bloco 9, a pedido
+     * explÃ­cito do usuÃ¡rio). Gate "manage-clients": Administrador e Advogado.
      */
     public function create(): View
     {
@@ -95,7 +95,7 @@ class ClientController extends Controller
         $legalAreaIds = $validated['legal_area_ids'] ?? [];
         unset($validated['legal_area_ids']);
 
-        // Senha do portal só é alterada se o campo for preenchido — em branco mantém a atual.
+        // Senha do portal sÃ³ Ã© alterada se o campo for preenchido â em branco mantÃ©m a atual.
         if (! empty($validated['portal_password'])) {
             $validated['portal_password'] = Hash::make($validated['portal_password']);
         } else {
@@ -109,8 +109,8 @@ class ClientController extends Controller
     }
 
     /**
-     * Soft delete (nunca exclusão definitiva, mesmo padrão já usado para usuários no
-     * Bloco 2) — só Administrador.
+     * Soft delete (nunca exclusÃ£o definitiva, mesmo padrÃ£o jÃ¡ usado para usuÃ¡rios no
+     * Bloco 2) â sÃ³ Administrador.
      */
     public function destroy(Client $cliente): RedirectResponse
     {
@@ -131,13 +131,29 @@ class ClientController extends Controller
             'country' => ['required', Rule::in(['Brazil', 'Portugal'])],
             'document_number' => ['required', 'string', 'max:50'],
             'secondary_document_number' => ['nullable', 'string', 'max:50'],
+            'nationality' => ['nullable', 'string', 'max:255'],
+            'marital_status' => ['nullable', 'string', 'max:50'],
+            'stable_union' => ['nullable', 'boolean'],
+            'profession' => ['nullable', 'string', 'max:255'],
+            'birth_date' => ['nullable', 'date'],
+            'document_issuer' => ['nullable', 'string', 'max:100'],
+            'mother_name' => ['nullable', 'string', 'max:255'],
+            'father_name' => ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
             'email' => ['required', 'email', 'max:255', Rule::unique('clients', 'email')->ignore($client)],
             'address_street' => ['nullable', 'string', 'max:255'],
+            'address_number' => ['nullable', 'string', 'max:50'],
+            'address_complement' => ['nullable', 'string', 'max:255'],
+            'address_neighborhood' => ['nullable', 'string', 'max:255'],
             'address_city' => ['nullable', 'string', 'max:255'],
             'address_state' => ['nullable', 'string', 'max:255'],
             'address_zipcode' => ['nullable', 'string', 'max:50'],
             'address_country' => ['nullable', 'string', 'max:255'],
+            'company_legal_name' => ['nullable', 'string', 'max:255'],
+            'company_trade_name' => ['nullable', 'string', 'max:255'],
+            'legal_representative' => ['nullable', 'string', 'max:255'],
+            'legal_representative_document' => ['nullable', 'string', 'max:50'],
+            'legal_representative_role' => ['nullable', 'string', 'max:100'],
             'portal_password' => [$client ? 'nullable' : 'required', 'string', 'min:6'],
             'active' => ['nullable', 'boolean'],
             'legal_area_ids' => ['nullable', 'array'],
@@ -146,8 +162,8 @@ class ClientController extends Controller
     }
 
     /**
-     * Mesma lógica de totalizadores por moeda do módulo financeiro (Bloco 5), aqui só
-     * filtrada para um cliente específico: a deve, já pagou, em atraso.
+     * Mesma lÃ³gica de totalizadores por moeda do mÃ³dulo financeiro (Bloco 5), aqui sÃ³
+     * filtrada para um cliente especÃ­fico: a deve, jÃ¡ pagou, em atraso.
      */
     private function buildClientFinancialSummary(Client $client): array
     {
